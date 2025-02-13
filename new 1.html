@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        main {
+            padding: 2rem;
+            background: white;
+            margin: 1rem auto;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Auction System</h1>
+    </header>
+    <main>
+        <h2>Enter Auction Details</h2>
+        <input type="text" id="teamName" placeholder="Enter Team Name">
+        <button onclick="setTeamName()">Set Team</button>
+        <h3 id="selectedTeam"></h3>
+        <input type="text" id="playerName" placeholder="Enter Player Name">
+        <input type="number" id="price" placeholder="Enter Price in Cr">
+        <button onclick="addToAuction()">Add to Auction</button>
+        <h2>Auctioned Players</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Player</th>
+                    <th>Price (Cr)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="auctionTable"></tbody>
+        </table>
+        <h2>Total Spent: ₹<span id="totalPrice">0</span> Cr</h2>
+        <h2>Remaining Budget: ₹<span id="remainingBudget">150</span> Cr</h2>
+        <h2>Players Acquired: <span id="playerCount">0</span> / 5</h2>
+		<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        main {
+            padding: 2rem;
+            background: white;
+            margin: 1rem auto;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Auction System</h1>
+    </header>
+    <main>
+        <h2>Enter Auction Details</h2>
+        <input type="text" id="teamName" placeholder="Enter Team Name">
+        <button onclick="setTeamName()">Set Team</button>
+        <h3 id="selectedTeam"></h3>
+        <input type="text" id="playerName" placeholder="Enter Player Name">
+        <input type="number" id="price" placeholder="Enter Price in Cr">
+        <button onclick="addToAuction()">Add to Auction</button>
+        <h2>Auctioned Players</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Player</th>
+                    <th>Price (Cr)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="auctionTable"></tbody>
+        </table>
+        <h2>Total Spent: ₹<span id="totalPrice">0</span> Cr</h2>
+        <h2>Remaining Budget: ₹<span id="remainingBudget">150</span> Cr</h2>
+        <h2>Players Acquired: <span id="playerCount">0</span> / 5</h2>
+    </main>
+    <script>
+        let totalBudget = 150;
+        let totalSpent = parseFloat(localStorage.getItem("totalSpent")) || 0;
+        let playerCount = parseInt(localStorage.getItem("playerCount")) || 0;
+        let team = localStorage.getItem("team") || "";
+        let auctionData = JSON.parse(localStorage.getItem("auctionData")) || [];
+
+        document.getElementById("selectedTeam").textContent = team ? "Team: " + team : "";
+        if (team) {
+            document.getElementById("teamName").style.display = "none";
+            document.querySelector("button[onclick='setTeamName()']").style.display = "none";
+        }
+        
+        function setTeamName() {
+            team = document.getElementById("teamName").value;
+            if (!team) {
+                alert("Please enter a team name!");
+                return;
+            }
+            document.getElementById("selectedTeam").textContent = "Team: " + team;
+            document.getElementById("teamName").style.display = "none";
+            document.querySelector("button[onclick='setTeamName()']").style.display = "none";
+            localStorage.setItem("team", team);
+        }
+        
+        function addToAuction() {
+            if (!team) {
+                alert("Please set a team name first!");
+                return;
+            }
+            if (playerCount >= 5) {
+                alert("Player limit reached! You can only buy up to 5 players.");
+                return;
+            }
+            const player = document.getElementById("playerName").value;
+            let price = parseFloat(document.getElementById("price").value);
+            
+            if (!player || isNaN(price) || price <= 0) {
+                alert("Please enter valid details!");
+                return;
+            }
+            
+            if (totalSpent + price > totalBudget) {
+                alert("Budget Exceeded! You cannot spend more than ₹150 Cr.");
+                return;
+            }
+            
+            totalSpent += price;
+            playerCount++;
+            auctionData.push({ team, player, price });
+            localStorage.setItem("auctionData", JSON.stringify(auctionData));
+            localStorage.setItem("totalSpent", totalSpent);
+            localStorage.setItem("playerCount", playerCount);
+            
+            updateBudgetDisplay();
+            renderAuctionTable();
+        }
+        
+        function removePlayer(index) {
+            totalSpent -= auctionData[index].price;
+            playerCount--;
+            auctionData.splice(index, 1);
+            localStorage.setItem("auctionData", JSON.stringify(auctionData));
+            localStorage.setItem("totalSpent", totalSpent);
+            localStorage.setItem("playerCount", playerCount);
+            updateBudgetDisplay();
+            renderAuctionTable();
+        }
+        
+        function updateBudgetDisplay() {
+            document.getElementById("totalPrice").textContent = totalSpent.toFixed(2);
+            document.getElementById("remainingBudget").textContent = (totalBudget - totalSpent).toFixed(2);
+            document.getElementById("playerCount").textContent = playerCount;
+        }
+        
+        function renderAuctionTable() {
+            const table = document.getElementById("auctionTable");
+            table.innerHTML = "";
+            auctionData.forEach((data, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${data.team}</td>
+                                 <td>${data.player}</td>
+                                 <td>₹${data.price.toFixed(2)} Cr</td>
+                                 <td><button onclick="removePlayer(${index})">Remove</button></td>`;
+                table.appendChild(row);
+            });
+        }
+
+        renderAuctionTable();
+        updateBudgetDisplay();
+    </script>
+</body>
+</html>
+
+    </main>
+    <script>
+        let totalBudget = 150;
+        let totalSpent = 0;
+        let playerCount = 0;
+        let team = "";
+        
+        function setTeamName() {
+            team = document.getElementById("teamName").value;
+            if (!team) {
+                alert("Please enter a team name!");
+                return;
+            }
+            document.getElementById("selectedTeam").textContent = "Team: " + team;
+            document.getElementById("teamName").style.display = "none";
+            document.querySelector("button[onclick='setTeamName()']").style.display = "none";
+        }
+        
+        function addToAuction() {
+            if (!team) {
+                alert("Please set a team name first!");
+                return;
+            }
+            if (playerCount >= 5) {
+                alert("Player limit reached! You can only buy up to 5 players.");
+                return;
+            }
+            const player = document.getElementById("playerName").value;
+            let price = parseFloat(document.getElementById("price").value);
+            
+            if (!player || isNaN(price) || price <= 0) {
+                alert("Please enter valid details!");
+                return;
+            }
+            
+            if (totalSpent + price > totalBudget) {
+                alert("Budget Exceeded! You cannot spend more than ₹150 Cr.");
+                return;
+            }
+            
+            totalSpent += price;
+            playerCount++;
+            updateBudgetDisplay();
+            
+            const table = document.getElementById("auctionTable");
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${team}</td>
+                             <td contenteditable="true">${player}</td>
+                             <td contenteditable="true">₹${price.toFixed(2)} Cr</td>
+                             <td>
+                                <button onclick="removePlayer(this, ${price})">Remove</button>
+                                <button onclick="saveChanges(this)">Save</button>
+                             </td>`;
+            table.appendChild(row);
+            
+            document.getElementById("playerName").value = "";
+            document.getElementById("price").value = "";
+        }
+        
+        function removePlayer(button, price) {
+            button.parentElement.parentElement.remove();
+            totalSpent -= price;
+            playerCount--;
+            updateBudgetDisplay();
+        }
+
+        function saveChanges(button) {
+            let row = button.parentElement.parentElement;
+            let newPrice = parseFloat(row.cells[2].textContent.replace(/₹|Cr/g, '').trim());
+            if (isNaN(newPrice) || newPrice <= 0) {
+                alert("Invalid price! Reverting to previous value.");
+                return;
+            }
+            let oldPrice = parseFloat(button.getAttribute("data-old-price")) || newPrice;
+            totalSpent += (newPrice - oldPrice);
+            if (totalSpent > totalBudget) {
+                alert("Budget Exceeded! Reverting changes.");
+                totalSpent -= (newPrice - oldPrice);
+                return;
+            }
+            button.setAttribute("data-old-price", newPrice);
+            updateBudgetDisplay();
+            alert("Changes saved successfully!");
+        }
+        
+        function updateBudgetDisplay() {
+            document.getElementById("totalPrice").textContent = totalSpent.toFixed(2);
+            document.getElementById("remainingBudget").textContent = (totalBudget - totalSpent).toFixed(2);
+            document.getElementById("playerCount").textContent = playerCount;
+        }
+		
+    </script>
+</body>
+</html>

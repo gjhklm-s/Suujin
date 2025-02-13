@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        main {
+            padding: 2rem;
+            background: white;
+            margin: 1rem auto;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Auction System</h1>
+    </header>
+    <main>
+        <h2>Enter Auction Details</h2>
+        <input type="text" id="teamName" placeholder="Enter Team Name">
+        <button onclick="setTeamName()">Set Team</button>
+        <h3 id="selectedTeam"></h3>
+        <input type="text" id="playerName" placeholder="Enter Player Name">
+        <input type="number" id="price" placeholder="Enter Price in Cr">
+        <button onclick="addToAuction()">Add to Auction</button>
+        <h2>Auctioned Players</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Player</th>
+                    <th>Price (Cr)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="auctionTable"></tbody>
+        </table>
+        <h2>Total Spent: ₹<span id="totalPrice">0</span> Cr</h2>
+        <h2>Remaining Budget: ₹<span id="remainingBudget">150</span> Cr</h2>
+        <h2>Players Acquired: <span id="playerCount">0</span> / 20</h2>
+		<main>
+		
+        <h2>Players List</h2>
+        <button onclick="showPlayers('wicketkeepers')">Wicketkeepers</button>
+        <button onclick="showPlayers('openers')">Openers</button>
+        <button onclick="showPlayers('middleOrder')">Middle Order</button>
+        <button onclick="showPlayers('allRounders')">All-Rounders</button>
+        <button onclick="showPlayers('spinners')">Spinners</button>
+        <button onclick="showPlayers('fastBowlers')">Fast Bowlers</button>
+        <button onclick="showPlayers('foreignPlayers')">Foreign Players</button>
+        <button onclick="showPlayers('indianPlayers')">Indian Players</button>
+
+        <div id="playersList"></div>
+   
+    
+
+        <h2>About This Game</h2>
+		<dl>
+		<li>Total Budget in auction: 150cr.</li>
+		<li>Total number of RTM: 2.</li>
+		<li>Maximum number of players for a team: 20.</li>
+		<li>Minimum number of players for a team: 15.</li>
+		<li>Maximum number of foreign player: 8.</li>
+		<li>Totally 12 players in the paying11 (which can include 5 foreign players).</li>
+  
+    </main>
+    <script>
+	const players = {
+            wicketkeepers: ["Jos Buttler", "Quinton De Kock", "Nicholas Pooran", "Rishab Pant", "Phil Salt", "Ishan Kishan", "Jonny Bairstow", "Rahmanullah Gurbaz", "KL Rahul", "Jitesh Sharma", "Anuj Rawat", "Devon Conway", "Sanju Samson", "KS Bharat", "Shai Hope"],
+            openers: ["Ruturaj Gaikwad", "Shubman Gill", "Abhishek Sharma", "Yashasvi Jaiswal", "Sai Sudharsan", "Faf du Plessis", "David Warner", "Kane Williamson", "Daryl Mitchell"],
+            middleOrder: ["David Miller", "Suryakumar Yadav", "Will Jacks", "Jake Fraser-McGurk", "Travis Head", "Shimron Hetmyer", "Tim David", "Heinrich Klaasen", "Tristan Stubbs", "Rovman Powell", "Rahul Tripathi", "Shivam Dube", "Deepak Hooda", "Shahrukh Khan", "Rinku Singh", "Manish Pandey", "Ajinkya Rahane", "Ayush Badoni", "Abdul Samad", "Tilak Verma", "Dhruv Jurel", "Riyan Parag", "Nitish Rana", "Rajat Patidar", "Abhinav Manohar", "Sameer Rizvi", "Shreyas Iyer", "Sarfaraz Khan", "Narayan Jagadeesan", "Prabhsimran Singh", "Shahbaz Ahmed", "Steve Smith", "Harry Brook", "Rilee Rossouw"],
+            allRounders: ["Ben Stokes", "Sunil Narine", "Andre Russell", "Hardik Pandya", "Glenn Maxwell", "Marcus Stoinis", "Romario Shepherd", "Liam Livingstone", "Mitchell Marsh", "Cameron Green", "Ravindra Jadeja", "Rachin Ravindra", "Sam Curran", "Axar Patel", "Rahul Tewatia", "Washington Sundar", "Venkatesh Iyer", "Moeen Ali", "Mitchell Santner", "Krunal Pandya", "Nitish Reddy", "Jason Holder", "Mohammad Nabi", "Aiden Markram", "Glenn Phillips", "Vijay Shankar", "Shakib Al Hasan", "Kyle Mayers"],
+            spinners: ["Rashid Khan", "Ravichandran Ashwin", "Noor Ahmad", "Kuldeep Yadav", "Varun Chakravarthy", "Ravi Bishnoi", "Yuzvendra Chahal", "Rahul Chahar", "R. Sai Kishore", "Mayank Markande", "Maheesh Theekshana", "Wanindu Hasaranga", "Adam Zampa", "Shreyas Gopal", "Karn Sharma", "Krishnappa Gowtham", "Adil Rashid"],
+            fastBowlers: ["Matheesha Pathirana", "Mitchell Starc", "Kagiso Rabada", "Anrich Nortje", "Trent Boult", "Jasprit Bumrah", "Arshdeep Singh", "Jofra Archer", "Bhuvneshwar Kumar", "Josh Hazlewood", "Mohammad Shami", "Mohammad Siraj", "T. Natarajan", "Naveen-ul-Haq", "Pat Cummins", "Marco Jansen", "Mohit Sharma", "Shardul Thakur", "Ishant Sharma", "Prasidh Krishna", "Umesh Yadav", "Umran Malik", "Avesh Khan", "Deepak Chahar", "Nathan Ellis", "Lockie Ferguson", "Sandeep Sharma", "Tushar Deshpande", "Nuwan Thushara", "Harshal Patel", "Khaleel Ahmed", "Alzarri Joseph", "Tim Southee", "Chris Jordan", "Gerald Coetzee", "Spencer Johnson"],
+        foreignPlayers:["asdfghj"]
+		};
+        function showPlayers(category) {
+            document.getElementById("playersList").innerHTML = `<h2>${category.replace(/([A-Z])/g, ' $1')}</h2><ol>` + players[category].map(player => `<li>${player}</li>`).join('') + `</ol>`;
+        }
+        let totalBudget = 150;
+        let totalSpent = parseFloat(localStorage.getItem("totalSpent")) || 0;
+        let playerCount = parseInt(localStorage.getItem("playerCount")) || 0;
+        let team = localStorage.getItem("team") || "";
+        let auctionData = JSON.parse(localStorage.getItem("auctionData")) || [];
+
+        document.getElementById("selectedTeam").textContent = team ? "Team: " + team : "";
+        if (team) {
+            document.getElementById("teamName").style.display = "none";
+            document.querySelector("button[onclick='setTeamName()']").style.display = "none";
+        }
+        
+        function setTeamName() {
+            team = document.getElementById("teamName").value;
+            if (!team) {
+                alert("Please enter a team name!");
+                return;
+            }
+            document.getElementById("selectedTeam").textContent = "Team: " + team;
+            document.getElementById("teamName").style.display = "none";
+            document.querySelector("button[onclick='setTeamName()']").style.display = "none";
+            localStorage.setItem("team", team);
+        }
+        
+        function addToAuction() {
+            if (!team) {
+                alert("Please set a team name first!");
+                return;
+            }
+            if (playerCount >= 20) {
+                alert("Player limit reached! You can only buy up to 20 players.");
+                return;
+            }
+            const player = document.getElementById("playerName").value;
+            let price = parseFloat(document.getElementById("price").value);
+            
+            if (!player || isNaN(price) || price <= 0) {
+                alert("Please enter valid details!");
+                return;
+            }
+            
+            if (totalSpent + price > totalBudget) {
+                alert("Budget Exceeded! You cannot spend more than ₹150 Cr.");
+                return;
+            }
+            
+            totalSpent += price;
+            playerCount++;
+            auctionData.push({ team, player, price });
+            localStorage.setItem("auctionData", JSON.stringify(auctionData));
+            localStorage.setItem("totalSpent", totalSpent);
+            localStorage.setItem("playerCount", playerCount);
+            
+            updateBudgetDisplay();
+            renderAuctionTable();
+        }
+        
+        function removePlayer(index) {
+            totalSpent -= auctionData[index].price;
+            playerCount--;
+            auctionData.splice(index, 1);
+            localStorage.setItem("auctionData", JSON.stringify(auctionData));
+            localStorage.setItem("totalSpent", totalSpent);
+            localStorage.setItem("playerCount", playerCount);
+            updateBudgetDisplay();
+            renderAuctionTable();
+        }
+        
+        function updateBudgetDisplay() {
+            document.getElementById("totalPrice").textContent = totalSpent.toFixed(2);
+            document.getElementById("remainingBudget").textContent = (totalBudget - totalSpent).toFixed(2);
+            document.getElementById("playerCount").textContent = playerCount;
+        }
+        
+        function renderAuctionTable() {
+            const table = document.getElementById("auctionTable");
+            table.innerHTML = "";
+            auctionData.forEach((data, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${data.team}</td>
+                                 <td>${data.player}</td>
+                                 <td>₹${data.price.toFixed(2)} Cr</td>
+                                 <td><button onclick="removePlayer(${index})">Remove</button></td>`;
+                table.appendChild(row);
+            });
+        }
+
+        renderAuctionTable();
+        updateBudgetDisplay();
+    </script>
+</body>
+</html>

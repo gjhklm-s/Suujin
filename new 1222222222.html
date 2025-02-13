@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            background-image: url('image/2.png'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: repeat; 
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background: red;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 2rem;
+            background: white;
+            margin: 1rem auto;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        h1, h2, h3, h4 {
+            text-align: center;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to AUCTION</h1>
+    </header>
+    <nav>
+        <a href="https://www.instagram.com/su.jin7301/?next=%2F" target="_blank">Home insta</a>
+        <a href="home.html">Contact: 9600714070</a>
+    </nav>
+    <main>
+        <h2>Players List</h2>
+        <button onclick="showPlayers('wicketkeepers')">Wicketkeepers</button>
+        <button onclick="showPlayers('openers')">Openers</button>
+        <button onclick="showPlayers('middleOrder')">Middle Order</button>
+        <button onclick="showPlayers('allRounders')">All-Rounders</button>
+        <button onclick="showPlayers('spinners')">Spinners</button>
+        <button onclick="showPlayers('fastBowlers')">Fast Bowlers</button>
+        <button onclick="showPlayers('foreignPlayers')">Foreign Players</button>
+        <button onclick="showPlayers('indianPlayers')">Indian Players</button>
+
+        <div id="playersList"></div>
+    </main>
+    <footer>
+        SUJIN SUJIN SUJIN
+    </footer>
+    <script>
+        const players = {
+            wicketkeepers: ["Jos Buttler", "Quinton De Kock", "Nicholas Pooran", "Rishab Pant", "Phil Salt", "Ishan Kishan", "Jonny Bairstow", "Rahmanullah Gurbaz", "KL Rahul", "Jitesh Sharma", "Anuj Rawat", "Devon Conway", "Sanju Samson", "KS Bharat", "Shai Hope"],
+            openers: ["Ruturaj Gaikwad", "Shubman Gill", "Abhishek Sharma", "Yashasvi Jaiswal", "Sai Sudharsan", "Faf du Plessis", "David Warner", "Kane Williamson", "Daryl Mitchell"],
+            middleOrder: ["David Miller", "Suryakumar Yadav", "Will Jacks", "Jake Fraser-McGurk", "Travis Head", "Shimron Hetmyer", "Tim David", "Heinrich Klaasen", "Tristan Stubbs", "Rovman Powell", "Rahul Tripathi", "Shivam Dube", "Deepak Hooda", "Shahrukh Khan", "Rinku Singh", "Manish Pandey", "Ajinkya Rahane", "Ayush Badoni", "Abdul Samad", "Tilak Verma", "Dhruv Jurel", "Riyan Parag", "Nitish Rana", "Rajat Patidar", "Abhinav Manohar", "Sameer Rizvi", "Shreyas Iyer", "Sarfaraz Khan", "Narayan Jagadeesan", "Prabhsimran Singh", "Shahbaz Ahmed", "Steve Smith", "Harry Brook", "Rilee Rossouw"],
+            allRounders: ["Ben Stokes", "Sunil Narine", "Andre Russell", "Hardik Pandya", "Glenn Maxwell", "Marcus Stoinis", "Romario Shepherd", "Liam Livingstone", "Mitchell Marsh", "Cameron Green", "Ravindra Jadeja", "Rachin Ravindra", "Sam Curran", "Axar Patel", "Rahul Tewatia", "Washington Sundar", "Venkatesh Iyer", "Moeen Ali", "Mitchell Santner", "Krunal Pandya", "Nitish Reddy", "Jason Holder", "Mohammad Nabi", "Aiden Markram", "Glenn Phillips", "Vijay Shankar", "Shakib Al Hasan", "Kyle Mayers"],
+            spinners: ["Rashid Khan", "Ravichandran Ashwin", "Noor Ahmad", "Kuldeep Yadav", "Varun Chakravarthy", "Ravi Bishnoi", "Yuzvendra Chahal", "Rahul Chahar", "R. Sai Kishore", "Mayank Markande", "Maheesh Theekshana", "Wanindu Hasaranga", "Adam Zampa", "Shreyas Gopal", "Karn Sharma", "Krishnappa Gowtham", "Adil Rashid"],
+            fastBowlers: ["Matheesha Pathirana", "Mitchell Starc", "Kagiso Rabada", "Anrich Nortje", "Trent Boult", "Jasprit Bumrah", "Arshdeep Singh", "Jofra Archer", "Bhuvneshwar Kumar", "Josh Hazlewood", "Mohammad Shami", "Mohammad Siraj", "T. Natarajan", "Naveen-ul-Haq", "Pat Cummins", "Marco Jansen", "Mohit Sharma", "Shardul Thakur", "Ishant Sharma", "Prasidh Krishna", "Umesh Yadav", "Umran Malik", "Avesh Khan", "Deepak Chahar", "Nathan Ellis", "Lockie Ferguson", "Sandeep Sharma", "Tushar Deshpande", "Nuwan Thushara", "Harshal Patel", "Khaleel Ahmed", "Alzarri Joseph", "Tim Southee", "Chris Jordan", "Gerald Coetzee", "Spencer Johnson"],
+        foreignPlayers:["asdfghj"]
+		};
+        function showPlayers(category) {
+            document.getElementById("playersList").innerHTML = `<h2>${category.replace(/([A-Z])/g, ' $1')}</h2><ol>` + players[category].map(player => `<li>${player}</li>`).join('') + `</ol>`;
+        }
+    </script>
+</body>
+</html>
