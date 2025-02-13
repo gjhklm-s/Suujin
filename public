@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-light text-center">
+    <div class="container py-4">
+        <h1 class="mb-4">Auction System</h1>
+        <div class="card p-4">
+            <h2>Enter Auction Details</h2>
+            <select id="teamName" class="form-select mb-3">
+                <option value="">Select User</option>
+                <option value="Sujin">Sujin</option>
+                <option value="Ajin">Ajin</option>
+                <option value="Abi">Abi</option>
+                <option value="Asoke">Asoke</option>
+                <option value="Kamal">Kamal</option>
+                <option value="Anish">Anish</option>
+                <option value="DD">DD</option>
+                <option value="Raja">Raja</option>
+                <option value="Aswath">Aswath</option>
+                <option value="Varshan">Varshan</option>
+            </select>
+            <input type="text" id="playerName" class="form-control my-2" placeholder="Enter Player Name">
+            <input type="number" id="price" class="form-control my-2" placeholder="Enter Price in Cr">
+            <button class="btn btn-success" onclick="addToAuction()">Add to Auction</button>
+        </div>
+
+        <h2 class="mt-4">Players</h2>
+        <div id="teamsContainer"></div>
+    </div>
+
+    <script>
+        async function addToAuction() {
+            const team = document.getElementById("teamName").value;
+            const name = document.getElementById("playerName").value;
+            const price = parseFloat(document.getElementById("price").value);
+
+            if (!team || !name || isNaN(price) || price <= 0) {
+                alert("Enter valid details!");
+                return;
+            }
+
+            try {
+                const res = await fetch("http://localhost:3000/addPlayer", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ team, name, price }),
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert("Player added successfully!");
+                    loadPlayers();
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                alert("Server error, try again later.");
+            }
+        }
+
+        async function loadPlayers() {
+            try {
+                const res = await fetch("http://localhost:3000/players");
+                const data = await res.json();
+
+                const teamsContainer = document.getElementById("teamsContainer");
+                teamsContainer.innerHTML = "<h3>Players</h3>";
+
+                data.forEach((player) => {
+                    const div = document.createElement("div");
+                    div.innerHTML = `<p>${player.team} - ${player.name} (₹${player.price} Cr) 
+                        <button class="btn btn-danger btn-sm" onclick="removePlayer(${player.id})">Remove</button></p>`;
+                    teamsContainer.appendChild(div);
+                });
+            } catch (error) {
+                console.error("Failed to load players:", error);
+            }
+        }
+
+        async function removePlayer(id) {
+            try {
+                const res = await fetch(`http://localhost:3000/removePlayer/${id}`, {
+                    method: "DELETE",
+                });
+
+                if (res.ok) {
+                    alert("Player removed successfully!");
+                    loadPlayers();
+                } else {
+                    alert("Failed to remove player.");
+                }
+            } catch (error) {
+                alert("Server error, try again later.");
+            }
+        }
+
+        loadPlayers();
+    </script>
+</body>
+</html>
